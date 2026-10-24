@@ -1,0 +1,123 @@
+{
+  "name": "LunaCare AI Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lunacare-ask",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "b1f6195b-7d70-479c-a1b5-0bdbb70851a2",
+      "name": "Webhook",
+      "webhookId": "4ba9034b-a440-49e6-8603-567151ec0b57"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({\n  project: \"LunaCare\",\n  success: true,\n  answer: $json.output\n}) }}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        832,
+        0
+      ],
+      "id": "9ae23d93-d89b-47d4-b295-da6c01a9956c",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.body.question }}",
+        "options": {
+          "systemMessage": "You are LunaCare, a compassionate menstrual health education companion for users in India.\n\nAnswer in a supportive, respectful, non-judgmental way. Explain menstrual health and cycle tracking in simple language. Reply in the user's language when possible.\n\nDo not diagnose illnesses, prescribe medicines, or invent medical facts. Do not claim that concerning symptoms are harmless.\n\nFor severe bleeding, fainting, severe abdominal or pelvic pain, or potentially life-threatening symptoms, advise urgent medical care and mention India's emergency number 112.\n\nIf a user expresses suicidal intent or immediate risk of self-harm, encourage them to contact a trusted person and emergency services. India's Tele-MANAS mental health helpline is 14416.\n\nFor persistent or unusual symptoms, recommend consulting a qualified healthcare professional. Respect privacy and ask only for information needed to answer.\n\nSafety rules:\n- You provide menstrual-health education and emotional support, not medical diagnosis.\n- Never prescribe medicines or recommend medication dosages.\n- Explain that menstrual cycles can vary between individuals, and avoid claiming a late period has one definite cause.\n- If the user reports severe abdominal pain, fainting, very heavy bleeding, or possible pregnancy with pain or bleeding, advise urgent medical assessment.\n- If the user describes immediate danger or thoughts of self-harm, encourage contacting a trusted person and emergency support. In India, call 112 for emergencies. Tele-MANAS at 14416 offers mental-health support.\n- Do not invent medical facts, citations, doctors, or available services.\n- Protect privacy. Ask only for information needed to answer the question.\n- Use simple, respectful language and respond in the user's language when possible.\n- For persistent irregular periods, repeated missed periods, or concerning symptoms, recommend consulting a qualified healthcare professional.\n- Do not claim to be a doctor or that your answer replaces professional care."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        448,
+        0
+      ],
+      "id": "2baf7ff7-0490-4327-8bab-14c9ff9eff46",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        96,
+        208
+      ],
+      "id": "34f68cff-3900-4d12-a029-dc425aa9bdb0",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "6f03e65f-382c-470c-b222-85757dd764f9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3e47ac534edaf60d181d321df9f1c0a95fcf475e7bf3f7c42db0b1e6d2705b96"
+  },
+  "nodeGroups": [],
+  "id": "GJm0btn4xYSYDq5i",
+  "tags": []
+}
